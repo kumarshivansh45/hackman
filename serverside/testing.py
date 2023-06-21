@@ -1,0 +1,131 @@
+# from PIL import Image
+# import io
+import base64
+import io
+import PIL.Image as Image
+import json
+import utils
+from config import Settings
+setting = Settings()
+
+# # Convert image to bytes
+# def image_to_bytes(image_path):
+#     with open(image_path, 'rb') as f:
+#         return f.read()
+
+# # Convert bytes to string
+# def bytes_to_string(byte_data):
+#     return byte_data.decode('latin-1')  # Use 'latin-1' encoding for arbitrary byte data
+
+# # Convert string to bytes
+# def string_to_bytes(string_data):
+#     return string_data.encode('latin-1')
+
+# # Convert bytes to image
+# def bytes_to_image(byte_data):
+#     image = Image.open(io.BytesIO(byte_data))
+#     return image
+
+# # Example usage
+# image_path = './cat.png'
+
+# # Convert image to bytes
+# image_bytes = image_to_bytes(image_path)
+# print("image bytes" , type(image_bytes),len(image_bytes))
+# # Convert bytes to string
+# byte_string = bytes_to_string(image_bytes)
+# print("byte_string" , type(byte_string),len(byte_string))
+
+# # Convert string to bytes
+# string_bytes = string_to_bytes(byte_string)
+# print("string_bytes" , type(string_bytes),len(string_bytes))
+
+# # Convert bytes to image
+# recovered_image = bytes_to_image(string_bytes)
+
+# # Display the recovered image
+# recovered_image.show()
+
+
+# importing the requests library
+# import requests ,shutil
+
+# # api-endpoint
+# URL = "http://127.0.0.1:8000/captchas/"
+
+# # location given here
+# location = "delhi technological university"
+
+# # defining a params dict for the parameters to be sent to the API
+# PARAMS = {'address':location}
+
+# # sending get request and saving the response as response object
+# r = requests.get(url = URL,stream=True)
+
+# # extracting data in json format
+# print(r.headers["content-type"])
+# with open('img.png', 'wb') as out_file:
+#     shutil.copyfileobj(r.raw, out_file)
+# del r
+
+# # Set the appropriate content types
+#     json_response.headers['Content-Type'] = 'application/json'
+#     json_response.headers['Image-Content-Type'] = 'image/jpeg'
+
+# hash = aes_encrypt("oh yeah", temp_key)
+# for k,v in hash.items():
+#     print(hash[k])
+#     hash[k]=base64.b64encode(v).decode('ascii')
+
+# for k,v in hash.items():
+#     hash[k]=(base64.b64decode(v))
+#     # hash[k]=str(hash[k],'ascii',errors=)
+#     print(hash[k])
+# print(aes_decrypt(hash['ciphertext'], hash['tag'], temp_key, hash['nonce']))
+
+# test = "hello"
+# print(0, test)
+# test = bytes(test, 'ascii')
+# print(1, test)
+# test = base64.b64encode(test)
+# print(2, test)
+# test = test.decode('ascii')
+# print(3, (test))
+# test = base64.b64decode(test)
+# print(4, test)
+# test = str(test,'ascii')
+# print(5, test)
+json_finally = "{\"image\": \"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\", \"hash\": \"{\\\"ciphertext\\\": \\\"O/GY6DZKBjSe+vu5Zdp+qa+2eccvSp6Sx3O6WJfVi5PN6a0zA0We84+YfMl9Ey96gjngp321xP72MMaurXvFwipGaf0LyWEzoEFLk9l4Dt4MZJlDPMc/c5NoT0zXv5Ud1sqJNofQHSImJ7BqZ1v0vA==\\\", \\\"tag\\\": \\\"n0+83TZ1Cn6vRGOJMq1wBg==\\\", \\\"nonce\\\": \\\"OK1ZYamRcXIK/o8zY74/5Q==\\\"}\"}"
+print(type(json_finally))
+json_finally = json.loads(json_finally)
+print(type(json_finally))
+image = (utils.b64string2hexbits(json_finally['image']))
+image_print = image
+hash = json.loads(json_finally['hash'])
+for k, v in hash.items():
+    hash[k] = utils.b64string2hexbits(hash[k])
+key = setting.secret_key_aes
+key = bytes(key, 'ascii')
+text_recovered = (utils.aes_decrypt(
+    hash['ciphertext'], hash['tag'], key, hash['nonce']))
+text_recovered = json.loads(text_recovered)
+print(type(text_recovered))
+for k,v in text_recovered.items():
+    print(k, ":" ,v)
+
+# from byte_array import byte_data
+utils.bytes2imageObject(image_print).save('./captcha3.png')
+# # using tobytes data as raw for frombyte function
+
+# img = Image.frombytes("L", (200, 90), image)
+# img.show()
+# from datetime import datetime , timedelta
+# import time
+# t1 = datetime.now()
+# time.sleep(2)
+# t2 = datetime.now()
+# print(float((t1-t2).total_seconds()))
+# if float((t1-t2).total_seconds())<0:
+#     print("oh")
+
+
