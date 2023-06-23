@@ -9,13 +9,50 @@ from database import Base
 
 class Captchas_data(Base):
     __tablename__ = "captcha_data"
-    uid = Column(Integer, primary_key=True, nullable=False)
-    token_number = Column(String, unique=True, nullable=False)
-    valid_time = Column(String, unique=False, nullable=False)
-    reason_api = Column(String, unique=False, nullable=False)
-    mac_ip_address = Column(String, unique=False, nullable=False)
+    uid = Column(Integer, primary_key=True, nullable=False )
+    token_number = Column(String(40), unique=True, nullable=False )
+    valid_time = Column(String(20), unique=False, nullable=False)
+    reason_api = Column(String(100), unique=False, nullable=False)
+    mac_ip_address = Column(String(200), unique=False, nullable=False)
 
+class User_data(Base):
+    __tablename__ = "user_data"
+    uid =  Column(Integer, primary_key=True, nullable=False )
+    phone =  Column(String(20), unique=True, nullable=False )
+    email =  Column(String(100), unique=True, nullable=False )
+    profile_pic = Column(String(20000), unique=False, nullable=True)
+    adhaar_verified_or_not = Column(Boolean, nullable=False,default=False)
+    google_login_code = Column(String(200), unique=True, nullable=True)
+    apple_login_code = Column(String(200), unique=True, nullable=True)
+    score = Column(String(100), unique=False, nullable=False , default = '0')
+    user_group = Column(String(100), unique=False, nullable=True)
+    password_hash = Column(String(500), unique=False, nullable=False)
+    
+class Permissions_data(Base):
+    __tablename__ = "Permissions_data"
+    uid =  Column(Integer, primary_key=True, nullable=False )
+    name = Column(String(100), unique=True, nullable=False)
+    create = Column(String(500), unique=False, nullable=False)
+    read = Column(String(500), unique=False, nullable=False)
+    update = Column(String(500), unique=False, nullable=False)
+    delete = Column(String(500), unique=False, nullable=False)
+    execute = Column(String(500), unique=False, nullable=False)
+    tfa = Column(String(500), unique=False, nullable=False)
+    captcha = Column(String(500), unique=False, nullable=False) # mandatory for all open api's
+    
+class Products_data(Base):
+    __tablename__ = "Products_data"
+    uid =  Column(Integer, primary_key=True, nullable=False )
+    company_name = Column(String(100),unique=False,nullable=False)
+    product_name = Column(String(200),unique=False,nullable=False)
+    company_cin = Column(String(100),unique=False,nullable=False)
+    category = Column(String(100),unique=False,nullable=False)
+    meta_data = Column(String(50000), unique=False,nullable=True)
+    image = Column(String(50000), unique=False,nullable=True)
+    expiration_duration_in_days = Column(Integer,unique=False,nullable=True)
 
+# class Product_items_data(Base):
+#     __tablename__ =     
 # class Data_conf(Base):
 #     __tablename__ = "data_conf"
 #     uid = Column(Integer, primary_key=True, nullable=False)

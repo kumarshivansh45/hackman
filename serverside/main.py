@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import models
+import models,auth
 from database import engine
-from routers import captchas
+from routers import captchas,tfa,user
 # , auth, vote,post
 # from routers import user, language, message, articles, data_conf, surveys, ads, fxn_config, forensics, system_conf, universal_app_data, buses, stoppages, trip_routes, journey, tracking
 from config import Settings
@@ -23,6 +23,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(captchas.router)
+app.include_router(tfa.router)
+app.include_router(user.router)
+app.include_router(auth.router)
+
 # app.include_router(post.router)
 # app.include_router(user.router)
 # app.include_router(language.router)
@@ -42,5 +46,4 @@ app.include_router(captchas.router)
 # app.include_router(tracking.router)
 
 
-# app.include_router(auth.router)
 # app.include_router(vote.router)

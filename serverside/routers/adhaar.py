@@ -9,8 +9,8 @@ import json
 from database import get_db
 
 router = APIRouter(
-    prefix="/ads",
-    tags=['Ads']
+    prefix="/adhaar",
+    tags=['Adhaar']
 )
 
 # CREATE A USER

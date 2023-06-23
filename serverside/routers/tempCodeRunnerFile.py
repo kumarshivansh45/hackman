@@ -1,0 +1,1 @@
+current_user: int = Depends(oauth2.get_current_user)

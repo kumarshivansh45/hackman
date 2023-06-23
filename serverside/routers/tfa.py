@@ -13,8 +13,8 @@ from fastapi.encoders import jsonable_encoder
 from datetime import datetime, timedelta
 
 router = APIRouter(
-    prefix="/captchas",
-    tags=['Captchas']
+    prefix="/tfa",
+    tags=['tfa']
 )
 
 settings = Settings()
@@ -74,7 +74,7 @@ settings = Settings()
 @ router.post("/submit_cap", status_code=status.HTTP_201_CREATED)
 def get_a_captcha(input: dict, db: Session = Depends(get_db)):
     # check if decrypt or not , if not decrypt alert admin and ignore
-
+    
     captcha_response = input['captcha_response']
     hash_returned = input['hash_returned']
     hash_returned = json.loads(hash_returned)
@@ -114,13 +114,15 @@ def get_a_captcha(input: dict, db: Session = Depends(get_db)):
     results = db.query(models.Captchas_data).filter(
         models.Captchas_data.token_number == token_number_new)
     results = results.first()
-
-    while results != None:
+    
+    
+    while results != None :
         token_number_new = utils.randomAlphaNumeric(32)
         results = db.query(models.Captchas_data).filter(
             models.Captchas_data.token_number == token_number_new)
         results = results.first()
-
+    
+    
     new_captcha_token = models.Captchas_data(
         token_number=token_number_new, valid_time=new_time_over, reason_api=old_valid_reason, mac_ip_address=old_mac_address)
     # print(">>>>>>>>>>>>>", input, type(input))
@@ -132,8 +134,7 @@ def get_a_captcha(input: dict, db: Session = Depends(get_db)):
     return new_captcha_token.__dict__
 
 
-# current_user: int = Depends(oauth2.get_current_user)
-@ router.post("/get_cap")
+@ router.post("/get_tfa_mail")
 def get_a_captcha(input: dict, db: Session = Depends(get_db)):
     # if captcha_reason valid , rate_limit:app id/ip/device-id non-suspecious
     # set valid-time
@@ -159,9 +160,7 @@ def get_a_captcha(input: dict, db: Session = Depends(get_db)):
     return_dict['image'] = image_data
     return_dict['hash'] = hash
     return_dict = json.dumps(return_dict)
-    # print(">>>>>>>>>>>>>>> current user", current_user.phone)
     return return_dict
-
 
 
 # UPDATE A USER

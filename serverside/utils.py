@@ -8,6 +8,7 @@ import io
 import json
 from datetime import datetime, timedelta
 import urllib
+from config import Settings
 # MAIL dependency packages
 from email import message
 import requests
@@ -24,18 +25,70 @@ import hashlib
 # PASSWORD_HASHING dependency packages
 from passlib.context import CryptContext
 from rsa import PrivateKey, encrypt
+from sqlalchemy import create_engine
+# import models
+from sqlalchemy import text
+from sqlalchemy.orm import sessionmaker
+from database import SessionLocal
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+settings = Settings()
+session = SessionLocal()
 
+def string2time(x):
+    return datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f')
+
+def execute_query(text_query):
+    results = session.execute(text(text_query))
+    if results == None:
+        return None
+    else:
+        results_list = list()
+        for x in results:
+            results_list.append(x)
+        return results_list
     
 
+def validate_captcha_token(token_dict):
+    token_num = token_dict["token_number"]
+    # verify if token exists
+    token_results = execute_query(f"select * from captcha_data where token_number='{token_num}';")
+    if token_results == []:
+        print(">>>>>>>>>>> no such token")
+        return {'oops': 'no such token found'}
+    if len(token_results)!=1:
+        print(">>>>>>>>>> shit , more than one token found , this will br reported ",(token_results))
+        
+        return{"oops":"shit , more than one token found , this will br reported"}
+        # report to admin
+    # verify device address and ip
+    # verify valid_reason
+    # verify timeing
+    if (float((string2time(token_results[0][2])-datetime.now()).total_seconds()) < 0):
+        return {'oops': 'too late !'}
+    
+    else:
+        return {"yay":"success"}
+
+
+# SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
+# engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# Session = sessionmaker(bind = engine)
+# session = Session()
+# print("DB CONNECTION MADE ! ")
+
+# for x in range(10):    
+#     a = session.execute(text("show tables;"))
+#     for x in a :
+#         print(x.token_number)
+        
+# def 
 
 def time_now():
     return str(datetime.now())
 
 
-def string2time(x):
-    return datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f')
+
 
 
 def bytes2imageObject(bytes):
@@ -221,6 +274,7 @@ def RSAverify(message, signature, key):
         return rsa.verify(message.encode('ascii'), signature, key) == 'SHA-1'
     except:
         return False
+
 
 # dict = aes_encrypt("dhanyashree has a solid figure", temp_key)
 # print(aes_decrypt(dict['ciphertext'], dict['tag'], temp_key, dict['nonce']))
